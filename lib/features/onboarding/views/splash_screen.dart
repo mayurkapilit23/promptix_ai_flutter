@@ -13,15 +13,19 @@ class SplashScreen extends StatelessWidget {
     return BlocListener<SplashBloc, SplashState>(
       listener: (context, state) {
         if (state is SplashNavigate) {
-          Navigator.pushNamed(context, AppRoutes.login);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.login,
+            (Route<dynamic> route) => false,
+          );
         }
       },
       child: Scaffold(
         body: Center(
           child: TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0, end: 1),
-              duration: const Duration(milliseconds: 1200),
-              curve: Curves.easeOut,
+            tween: Tween(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 1200),
+            curve: Curves.easeOut,
             builder: (context, value, child) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -55,7 +59,7 @@ class SplashScreen extends StatelessWidget {
                   ),
                 ],
               );
-            }
+            },
           ),
         ),
       ),
