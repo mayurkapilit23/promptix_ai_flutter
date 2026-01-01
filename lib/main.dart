@@ -1,28 +1,39 @@
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:promptix_ai_flutter/core/utils/app_routes.dart';
-import 'package:promptix_ai_flutter/features/authentication/views/login_screen.dart';
-import 'package:promptix_ai_flutter/features/gemini/views/home_screen.dart';
-import 'package:promptix_ai_flutter/features/onboarding/views/splash_screen.dart';
+import 'package:promptix_ai_flutter/app_root.dart';
+import 'package:promptix_ai_flutter/features/authentication/bloc/auth_bloc.dart';
+import 'package:promptix_ai_flutter/features/authentication/bloc/auth_event.dart';
+import 'package:promptix_ai_flutter/features/authentication/data/repositories/auth_repo.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-import 'features/onboarding/bloc/splash_bloc.dart';
-import 'features/onboarding/bloc/splash_event.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   log('main method');
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<SplashBloc>(
-          create: (_) => SplashBloc()..add(SplashStarted()),
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      final authRepo = AuthRepo();
+
+      runApp(
+        MultiBlocProvider(
+          providers: [
+            BlocProvider<AuthBloc>(create: (_) => AuthBloc(authRepo)..add(AppStarted())),
+          ],
+          child: const MyApp(),
         ),
-      ],
-      child: const MyApp(),
-    ),
+      );
+    },
+    (error, stack) {
+      debugPrint('Uncaught error by runZonedGuarded: $error\n$stack');
+    },
   );
 }
 
@@ -32,15 +43,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ShadApp(
-      initialRoute: AppRoutes.splash,
-      // theme: ThemeData(fontFamily: GoogleFonts.sourceCodePro().fontFamily),
       title: 'Promptix Ai',
       debugShowCheckedModeBanner: false,
-      routes: {
-        AppRoutes.splash: (context) => SplashScreen(),
-        AppRoutes.login: (context) => LoginScreen(),
-        AppRoutes.home: (context) => HomeScreen(),
-      },
+      home: AppRoot(),
     );
   }
 }

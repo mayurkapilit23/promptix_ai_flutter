@@ -17,10 +17,17 @@ dependencies:
   google_fonts: ^6.3.3
   shared_preferences: ^2.5.4
   flutter_secure_storage: ^10.0.0
-  firebase_auth: ^6.1.3
-  firebase_core: ^4.3.0
-  cloud_firestore: ^6.1.1
   shadcn_ui: ^0.43.0
+
+
+  # Core Firebase
+  firebase_core: ^4.3.0
+
+  # Firebase Services
+  firebase_auth: ^6.1.3
+  cloud_firestore: ^6.1.1
+  flutter_native_splash: ^2.4.7
+
 
 dev_dependencies:
   flutter_test:
